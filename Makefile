@@ -24,6 +24,10 @@ endif
 
 flavor=gcc_$(os)$(bits)
 
+libs=release/gcc_linux_x64/libebml2.a release/gcc_linux_x64/libmatroska2.a
+
+all: GNUmakefile
+	$(MAKE) -f GNUmakefile
 
 $(COREMAKE):
 	cd ./corec/tools/coremake/ && make
@@ -31,11 +35,13 @@ $(COREMAKE):
 GNUmakefile: $(COREMAKE)
 	$(COREMAKE) $(flavor)
 
-all: GNUmakefile
-	$(MAKE) -f GNUmakefile
+
 
 install:
 	mkdir -p $(DESTDIR)/$(PREFIX)
-	cp -rf ./libmatroska2/matroska $(DESTDIR)/$(PREFIX)/.
-	cp -rf ./corec/corec $(DESTDIR)/$(PREFIX)/.
-	cp -rf ./libebml2/ebml $(DESTDIR)/$(PREFIX)/.
+	cp -rf ./libmatroska2/matroska $(DESTDIR)/$(PREFIX)/include/.
+	cp -rf ./corec/corec $(DESTDIR)/$(PREFIX)/include/.
+	cp -rf ./libebml2/ebml $(DESTDIR)/$(PREFIX)/include/.
+	cp -f  ./config.h $(DESTDIR)/$(PREFIX)/include/corec/.
+	cp -f  ./corec/tools/coremake/config_helper.h $(DESTDIR)/$(PREFIX)/include/corec/.
+	cp -rf $(libs) $(DESTDIR)/$(PREFIX)/lib/.
