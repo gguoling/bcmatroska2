@@ -1,4 +1,5 @@
 PREFIX=/usr/local
+DEBUG=0
 COREMAKE=./corec/tools/coremake/coremake
 
 bits_64=$(shell uname -a | grep x86_64)
@@ -22,9 +23,13 @@ ifneq ($(bits_64),)
 bits=_x64
 endif
 
-flavor=gcc_$(os)$(bits)
+ifeq ($(DEBUG), 1)
+debug=_debug
+endif
 
-libs=release/gcc_linux_x64/libebml2.a release/gcc_linux_x64/libmatroska2.a
+flavor=gcc_$(os)$(bits)$(debug)
+
+libs=release/$(flavor)/libebml2.a release/$(flavor)/libmatroska2.a
 
 all: GNUmakefile
 	$(MAKE) -f GNUmakefile
