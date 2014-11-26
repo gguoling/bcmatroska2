@@ -377,10 +377,8 @@ typedef struct nodecontext nodecontext;
 
 typedef struct node
 {
-#ifdef CONFIG_DEBUGCHECKS
     fourcc_t    FourCC; // help figure out memory leak
     uint32_t    Magic;
-#endif
     const void* VMT;
     nodedata*   Data;
     size_t      RefCount;
@@ -484,10 +482,8 @@ struct nodemodule
 	uint8_t* Min;
 	uint8_t* Max;
 	datetime_t Stamp;
-#if defined(CONFIG_DEBUG_LEAKS)
     array ClassRefs;
     void *LockRefs;
-#endif
 	uint8_t Found;
     uint8_t Config;
     uint8_t Changed;

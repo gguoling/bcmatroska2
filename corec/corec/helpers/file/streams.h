@@ -103,10 +103,7 @@
 typedef struct stream
 {
 	node Base;
-#if defined(CONFIG_DEBUGCHECKS)
     tchar_t URL[MAXPATH];
-#endif
-
 } stream;
 
 typedef struct memstream

@@ -53,9 +53,7 @@ typedef struct nodemetalookuphead
 
 struct nodeclass
 {
-#ifdef CONFIG_DEBUGCHECKS
     fourcc_t    FourCC; // help figure out memory leak
-#endif
 	const nodemeta* Meta;
 	nodemodule* Module;
 	const nodeclass* ParentClass;
