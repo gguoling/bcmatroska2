@@ -12,9 +12,9 @@ target_include_directories(matroska2
 target_link_libraries(matroska2 ebml2 corec)
 
 install(DIRECTORY matroska
-	DESTINATION ${CMAKE_INSTALL_DIR}/include
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include
 )
 
 install(TARGETS matroska2
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}/lib
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
 )

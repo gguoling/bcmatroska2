@@ -33,5 +33,5 @@ install(FILES
 	memalloc.h
 	memheap.h
 	portab.h
-	DESTINATION ${CMAKE_INSTALL_DIR}/lib/matroska2/include/corec
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include/corec
 )

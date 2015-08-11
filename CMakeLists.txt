@@ -21,7 +21,7 @@ add_subdirectory(libebml2)
 add_subdirectory(libmatroska2)
 
 install(FILES ${CMAKE_BINARY_DIR}/config.h
-	DESTINATION ${CMAKE_INSTALL_DIR}/lib/matroska2/include/corec
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include/corec
 )
 
 include(CMakePackageConfigHelpers)
@@ -39,5 +39,5 @@ configure_file(Matroska2Config.cmake.in
 install(FILES
 	${CMAKE_BINARY_DIR}/Matroska2ConfigVersion.cmake
 	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
-	DESTINATION ${CMAKE_INSTALL_DIR}/lib/cmake/Matroska2
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/Matroska2
 )

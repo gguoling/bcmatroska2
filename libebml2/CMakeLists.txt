@@ -11,5 +11,5 @@ add_library(ebml2 STATIC
 )
 
 install(DIRECTORY ebml
-	DESTINATION ${CMAKE_INSTALL_DIR}/lib/matroska2/include
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include
 )
