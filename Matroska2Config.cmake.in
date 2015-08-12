@@ -32,6 +32,12 @@ get_filename_component(MATROSKA2_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 set(MATROSKA2_INCLUDE_DIRS
 	${MATROSKA2_CMAKE_DIR}/../../../include
 )
-set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../libmatroska2.a ${MATROSKA2_CMAKE_DIR}/../../libebml2.a ${MATROSKA2_CMAKE_DIR}/../../libcorec.a)
+
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL Windows)
+	set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../matroska2.lib ${MATROSKA2_CMAKE_DIR}/../../ebml2.lib ${MATROSKA2_CMAKE_DIR}/../../corec.lib)
+else()
+	set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../libmatroska2.a ${MATROSKA2_CMAKE_DIR}/../../libebml2.a ${MATROSKA2_CMAKE_DIR}/../../libcorec.a)
+endif()
+
 set(MATROSKA2_CPPFLAGS)
 set(MATROSKA2_FOUND 1)
