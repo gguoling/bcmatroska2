@@ -18,7 +18,7 @@ set(COREC_SOURCES
 	str/str.c
 )
 
-if(${CMAKE_HOST_SYSTEM_NAME} EQUAL Windows)
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
 	list(APPEND COREC_SOURCES
 		helpers/charconvert/charconvert_win32.c
 		helpers/date/date_win32.c
