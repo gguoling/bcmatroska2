@@ -31,8 +31,7 @@
 get_filename_component(MATROSKA2_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 set(MATROSKA2_INCLUDE_DIRS
 	${MATROSKA2_CMAKE_DIR}/../../../include
-	${MATROSKA2_CMAKE_DIR}/../../matroska2/include
 )
-set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../libmatroska.a)
+set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../libmatroska2.a ${MATROSKA2_CMAKE_DIR}/../../libebml2.a ${MATROSKA2_CMAKE_DIR}/../../libcorec.a)
 set(MATROSKA2_CPPFLAGS)
 set(MATROSKA2_FOUND 1)

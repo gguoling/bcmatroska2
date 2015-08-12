@@ -46,6 +46,10 @@ endif()
 
 add_library(corec STATIC ${COREC_SOURCES})
 
+install(TARGETS corec
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+)
+
 install(FILES
 	banned.h
 	confhelper.h
@@ -55,5 +59,34 @@ install(FILES
 	memalloc.h
 	memheap.h
 	portab.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include/corec
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec
 )
+
+install(FILES array/array.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/array)
+install(FILES helpers/charconvert/charconvert.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/charconvert)
+install(FILES helpers/date/date.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/date)
+install(FILES helpers/file/file.h
+	helpers/file/streams.h
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/file
+)
+install(FILES helpers/md5/md5.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/md5)
+install(FILES helpers/parser/buffer.h
+	helpers/parser/dataheap.h
+	helpers/parser/hotkey.h
+	helpers/parser/nodelookup.h
+	helpers/parser/parser.h
+	helpers/parser/strtab.h
+	helpers/parser/strtypes.h
+	helpers/parser/urlpart.h
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/parser
+)
+install(FILES helpers/system/ccsystem.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/system)
+install(FILES multithread/multithread.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/multithread)
+install(FILES node/node.h
+	node/node_internal.h
+	node/nodebase.h
+	node/nodetools.h
+	node/nodetree.h
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/node
+)
+install(FILES str/str.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/str)

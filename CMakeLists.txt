@@ -16,12 +16,16 @@ configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
 include_directories(${CMAKE_BINARY_DIR} ./corec)
 
+if(NOT ${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+	add_compile_options(-fPIC)
+endif()
+
 add_subdirectory(corec/corec)
 add_subdirectory(libebml2)
 add_subdirectory(libmatroska2)
 
 install(FILES ${CMAKE_BINARY_DIR}/config.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include/corec
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec
 )
 
 include(CMakePackageConfigHelpers)

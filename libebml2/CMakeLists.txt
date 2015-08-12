@@ -10,6 +10,12 @@ add_library(ebml2 STATIC
 	ebmlvoid.c
 )
 
+target_link_libraries(ebml2 corec)
+
+install(TARGETS ebml2
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+)
+
 install(DIRECTORY ebml
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/matroska2/include
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/include
 )
