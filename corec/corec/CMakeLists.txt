@@ -18,7 +18,7 @@ set(COREC_SOURCES
 	str/str.c
 )
 
-if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+if(CMAKE_HOST_WIN32)
 	list(APPEND COREC_SOURCES
 		helpers/charconvert/charconvert_win32.c
 		helpers/date/date_win32.c
@@ -29,13 +29,22 @@ if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
 	)
 else()
 	list(APPEND COREC_SOURCES
-		helpers/charconvert/charconvert_linux.c
 		helpers/date/date_libc.c
 		helpers/file/file_libc.c
 		helpers/system/ccsystem_posix.c
 		multithread/multithread_pthread.c
-		str/str_linux.c
 	)
+	if(CMAKE_HOST_APPLE)
+		list(APPEND COREC_SOURCES
+                	helpers/charconvert/charconvert_osx.c
+                	str/str_osx.c
+		)
+	else()
+		list(APPEND COREC_SOURCES
+			helpers/charconvert/charconvert_linux.c
+			str/str_linux.c
+		)
+	endif()
 endif()
 
 if(${CONFIG_STDIO})
