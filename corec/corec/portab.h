@@ -707,7 +707,7 @@ extern void free_palmos(void*);
 
 #ifndef NDEBUG
 #if defined(TARGET_OSX)
-#include </usr/include/assert.h>
+#include <assert.h>
 #elif !defined(TARGET_WINCE) && !defined(TARGET_PALMOS)
 #include <assert.h>
 #else
