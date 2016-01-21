@@ -32,8 +32,21 @@
 
 #include <windows.h>
 
+#if defined(__MINGW32__) || !defined(WINAPI_FAMILY_PARTITION) || !defined(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_FAMILY_PARTITION)
+#if defined(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_PARTITION_PHONE_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PHONE_APP)
+#define WINDOWS_PHONE 1
+#elif defined(WINAPI_PARTITION_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define WINDOWS_UNIVERSAL 1
+#endif
+#endif
+
 int RunCommand(anynode *p, const tchar_t *Cmd, const tchar_t *CmdParams, bool_t Silent)
 {
+#ifdef WINDOWS_DESKTOP
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     DWORD returnCode;
@@ -52,4 +65,7 @@ int RunCommand(anynode *p, const tchar_t *Cmd, const tchar_t *CmdParams, bool_t 
     while (GetExitCodeProcess(pi.hProcess, &returnCode) && returnCode==STILL_ACTIVE)
         Sleep(100);
     return (int)returnCode;
+#else
+	return 0;
+#endif
 }

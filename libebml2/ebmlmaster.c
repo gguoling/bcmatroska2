@@ -293,7 +293,7 @@ static err_t ReadData(ebml_master *Element, stream *Input, const ebml_parser_con
 {
     int UpperEltFound = 0;
     bool_t bFirst = 1;
-    ebml_element *SubElement;
+    ebml_element *SubElement = NULL;
     ebml_crc *CRCElement = NULL;
     stream *ReadStream = Input;
     array CrcBuffer;

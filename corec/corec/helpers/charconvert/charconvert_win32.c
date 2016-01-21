@@ -128,27 +128,31 @@ static const codepage CodePage[] =
 
 static NOINLINE UINT GetCodePage(const tchar_t* Name, bool_t To)
 {
-    if (Name && Name[0])
-    {
-        const codepage* i;
+	if (Name && Name[0])
+	{
+		const codepage* i;
 
-    	int CP;
-	    if (stscanf(Name,T("CP%d"),&CP)==1 ||
-            stscanf(Name,T("windows-%d"),&CP)==1)
-		    return CP;
+		int CP;
+		if (stscanf(Name, T("CP%d"), &CP) == 1 ||
+			stscanf(Name, T("windows-%d"), &CP) == 1)
+			return CP;
 
-        for (i=CodePage;i->Name;++i)
-	        if (tcsisame_ascii(Name,i->Name))
-            {
-                if (IsValidCodePage(i->CodePage))
-    		        return i->CodePage;
-                if (i->CodePage2 && IsValidCodePage(i->CodePage2))
-    		        return i->CodePage2;
-                break;
-            }
-    }
-    if (To)
+		for (i = CodePage;i->Name;++i)
+			if (tcsisame_ascii(Name, i->Name))
+			{
+				if (IsValidCodePage(i->CodePage))
+					return i->CodePage;
+				if (i->CodePage2 && IsValidCodePage(i->CodePage2))
+					return i->CodePage2;
+				break;
+			}
+	}
+	if (To)
+#ifndef WINDOWS_DESKTOP
+		return CP_OEMCP;
+#else
         return GetOEMCP();
+#endif
     else
         return CP_ACP;
 }

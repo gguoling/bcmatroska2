@@ -58,7 +58,11 @@ systick_t GetTimeTick()
 #else
 systick_t GetTimeTick()
 {
+#ifndef WINDOWS_DESKTOP
+	return (systick_t)GetTickCount64();
+#else
 	return timeGetTime();
+#endif
 }
 #endif
 

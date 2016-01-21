@@ -42,9 +42,25 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+#if defined(__MINGW32__) || !defined(WINAPI_FAMILY_PARTITION) || !defined(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_FAMILY_PARTITION)
+#if defined(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_PARTITION_PHONE_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PHONE_APP)
+#define WINDOWS_PHONE 1
+#elif defined(WINAPI_PARTITION_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define WINDOWS_UNIVERSAL 1
+#endif
+#endif
+
 int tcsicmp(const tchar_t* a,const tchar_t* b) 
 {
+#ifndef WINDOWS_DESKTOP
+	int i = CompareStringEx(LOCALE_NAME_USER_DEFAULT, NORM_IGNORECASE, a, -1, b, -1, NULL, NULL, 0);
+#else
     int i = CompareString(LOCALE_USER_DEFAULT,NORM_IGNORECASE,a,-1,b,-1);
+#endif
     if (i)
         return i-CSTR_EQUAL;
 
@@ -58,7 +74,11 @@ int tcsicmp(const tchar_t* a,const tchar_t* b)
 
 int tcsnicmp(const tchar_t* a,const tchar_t* b,size_t n) 
 {
-    int i = CompareString(LOCALE_USER_DEFAULT,NORM_IGNORECASE,a,min(tcslen(a),n),b,min(tcslen(b),n));
+#ifndef WINDOWS_DESKTOP
+	int i = CompareStringEx(LOCALE_NAME_USER_DEFAULT, NORM_IGNORECASE, a, min(tcslen(a), n), b, min(tcslen(b), n), NULL, NULL, 0);
+#else
+	int i = CompareString(LOCALE_USER_DEFAULT,NORM_IGNORECASE,a,min(tcslen(a),n),b,min(tcslen(b),n));
+#endif
     if (i)
         return i-CSTR_EQUAL;
 
@@ -72,7 +92,11 @@ int tcsnicmp(const tchar_t* a,const tchar_t* b,size_t n)
 
 int tcscmp(const tchar_t* a,const tchar_t* b) 
 {
-    int i = CompareString(LOCALE_USER_DEFAULT,0,a,-1,b,-1);
+#ifndef WINDOWS_DESKTOP
+	int i = CompareStringEx(LOCALE_NAME_USER_DEFAULT, 0, a, -1, b, -1, NULL, NULL, 0);
+#else
+	int i = CompareString(LOCALE_USER_DEFAULT,0,a,-1,b,-1);
+#endif
     if (i)
         return i-CSTR_EQUAL;
 
@@ -86,7 +110,11 @@ int tcscmp(const tchar_t* a,const tchar_t* b)
 
 int tcsncmp(const tchar_t* a,const tchar_t* b,size_t n) 
 {
-    int i = CompareString(LOCALE_USER_DEFAULT,0,a,min(tcslen(a),n),b,min(tcslen(b),n));
+#ifndef WINDOWS_DESKTOP
+	int i = CompareStringEx(LOCALE_NAME_USER_DEFAULT, 0, a, min(tcslen(a), n), b, min(tcslen(b), n), NULL, NULL, 0);
+#else
+	int i = CompareString(LOCALE_USER_DEFAULT,0,a,min(tcslen(a),n),b,min(tcslen(b),n));
+#endif
     if (i)
         return i-CSTR_EQUAL;
 
@@ -100,8 +128,12 @@ int tcsncmp(const tchar_t* a,const tchar_t* b,size_t n)
 
 tchar_t* TcsToUpper(tchar_t* Out,size_t OutLen,const tchar_t* In)
 {
+#ifndef WINDOWS_DESKTOP
+	if (LCMapStringEx(LOCALE_NAME_USER_DEFAULT, LCMAP_UPPERCASE, In, -1, Out, OutLen, NULL, NULL, 0))
+#else
     if (LCMapString(LOCALE_USER_DEFAULT,LCMAP_UPPERCASE,In,-1,Out,OutLen))
-        return Out;
+#endif
+		return Out;
 
     // fallback
     if (OutLen)

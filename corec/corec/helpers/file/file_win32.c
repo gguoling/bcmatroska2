@@ -47,10 +47,24 @@
 #define FOF_NO_UI (0x04|0x10|0x400|0x200)
 #endif
 
+#if defined(__MINGW32__) || !defined(WINAPI_FAMILY_PARTITION) || !defined(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_FAMILY_PARTITION)
+#if defined(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_PARTITION_PHONE_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PHONE_APP)
+#define WINDOWS_PHONE 1
+#elif defined(WINAPI_PARTITION_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define WINDOWS_UNIVERSAL 1
+#endif
+#endif
+
 #if defined(TARGET_WINCE)
 static HMODULE CEShellDLL = NULL;
 #endif
+#ifdef WINDOWS_DESKTOP
 static int (WINAPI* FuncSHFileOperation)(SHFILEOPSTRUCT*) = NULL;
+#endif
 
 #ifndef ERROR_INVALID_DRIVE_OBJECT
 #define ERROR_INVALID_DRIVE_OBJECT		4321L
@@ -88,10 +102,17 @@ static filepos_t SetFilePointerFP(HANDLE hFile, filepos_t DistanceToMove, DWORD 
 
   li.QuadPart = DistanceToMove;
 
+#ifndef WINDOWS_DESKTOP
+  BOOL ret = SetFilePointerEx(hFile, li, &li, dwMoveMethod);
+
+  if (ret == FALSE)
+	  return -1;
+#else
   li.LowPart = SetFilePointer(hFile, li.LowPart, &li.HighPart, dwMoveMethod);
 
   if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
     return -1;
+#endif
 
   return (filepos_t)li.QuadPart;
 }
@@ -114,10 +135,17 @@ static err_t Open(filestream* p, const tchar_t* URL, int Flags)
         DWORD FileSizeHigh;
 		HANDLE Handle;
 
-        Handle = CreateFile(URL,((Flags & SFLAG_RDONLY || !(Flags & SFLAG_WRONLY))?GENERIC_READ:0)|
+#ifndef WINDOWS_DESKTOP
+		Handle = CreateFile2(URL, ((Flags & SFLAG_RDONLY || !(Flags & SFLAG_WRONLY)) ? GENERIC_READ : 0) |
+			((Flags & SFLAG_WRONLY || !(Flags & SFLAG_RDONLY)) ? GENERIC_WRITE : 0),
+			FILE_SHARE_READ | FILE_SHARE_WRITE, (Flags & SFLAG_CREATE) ? CREATE_ALWAYS : OPEN_EXISTING,
+			NULL);
+#else
+		Handle = CreateFile(URL,((Flags & SFLAG_RDONLY || !(Flags & SFLAG_WRONLY))?GENERIC_READ:0)|
             ((Flags & SFLAG_WRONLY || !(Flags & SFLAG_RDONLY))?GENERIC_WRITE:0),
 			FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,(Flags & SFLAG_CREATE)?CREATE_ALWAYS:OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,NULL);
+#endif
 
 		if (Handle == INVALID_HANDLE_VALUE)
 		{
@@ -135,7 +163,16 @@ static err_t Open(filestream* p, const tchar_t* URL, int Flags)
         p->Flags = Flags & ~SFLAG_REOPEN;
 		p->Handle = Handle;
 
+#ifndef WINDOWS_DESKTOP
+		{
+			WIN32_FILE_ATTRIBUTE_DATA attr_data;
+			GetFileAttributesEx(URL, GetFileExInfoStandard, &attr_data);
+			FileSizeLow = attr_data.nFileSizeLow;
+			FileSizeHigh = attr_data.nFileSizeHigh;
+		}
+#else
 		FileSizeLow = GetFileSize(Handle,&FileSizeHigh);
+#endif
         if (FileSizeLow != INVALID_FILE_SIZE || GetLastError()==NO_ERROR)
             p->Length = (filepos_t)(((int64_t)FileSizeHigh << 32) | FileSizeLow);
 
@@ -341,7 +378,11 @@ static err_t SetLength(filestream* p,dataid UNUSED_PARAM(Id),const filepos_t* Da
 
 static err_t OpenDir(filestream* p,const tchar_t* URL,int UNUSED_PARAM(Flags))
 {
+#ifndef WINDOWS_DESKTOP
+	WIN32_FILE_ATTRIBUTE_DATA attr_data;
+#else
 	DWORD Attrib;
+#endif
 	tchar_t Path[MAXPATHFULL];
 
 	if (p->Find != INVALID_HANDLE_VALUE)
@@ -359,17 +400,30 @@ static err_t OpenDir(filestream* p,const tchar_t* URL,int UNUSED_PARAM(Flags))
     else
 #endif
     {
+#ifndef WINDOWS_DESKTOP
+		if (GetFileAttributesEx(URL, GetFileExInfoStandard, &attr_data) == 0)
+			return ERR_FILE_NOT_FOUND;
+		
+		if (!(attr_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			return ERR_NOT_DIRECTORY;
+#else
 		Attrib = GetFileAttributes(URL);
 		if (Attrib == (DWORD)-1)
 			return ERR_FILE_NOT_FOUND;
 
 		if (!(Attrib & FILE_ATTRIBUTE_DIRECTORY))
 			return ERR_NOT_DIRECTORY;
+#endif
 
         tcscpy_s(Path,TSIZEOF(Path),URL);
         AddPathDelimiter(Path,TSIZEOF(Path));
         tcscat_s(Path,TSIZEOF(Path),T("*.*"));
+#ifndef WINDOWS_DESKTOP
+		WIN32_FIND_DATA FileData;
+		p->Find = FindFirstFileEx(Path, FindExInfoStandard, &FileData, FindExSearchNameMatch, NULL, 0);
+#else
 		p->Find = FindFirstFile(Path, &p->FindData);
+#endif
     }
 
     return ERR_NONE;
@@ -382,7 +436,7 @@ static err_t EnumDir(filestream* p,const tchar_t* Exts,bool_t ExtFilter,streamdi
 	Item->FileName[0] = 0;
 	Item->DisplayName[0] = 0;
 
-#if !defined(TARGET_WINCE)
+#if !defined(TARGET_WINCE) && defined(WINDOWS_DESKTOP)
     if (p->DriveNo>=0)
     {
         size_t n = GetLogicalDriveStrings(0,NULL);
@@ -468,7 +522,7 @@ static err_t CreateFunc(node* UNUSED_PARAM(p))
 	CEShellDLL = LoadLibrary(T("ceshell.dll"));
 	if (CEShellDLL)
 		*(FARPROC*)(void*)&FuncSHFileOperation = GetProcAddress(CEShellDLL,MAKEINTRESOURCE(14));
-#else
+#elif defined(WINDOWS_DESKTOP)
     FuncSHFileOperation = SHFileOperation;
 #endif
 
@@ -514,9 +568,15 @@ bool_t FolderCreate(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
 
 bool_t FileExists(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
 {
+#ifndef WINDOWS_DESKTOP
+	WIN32_FILE_ATTRIBUTE_DATA attr_data;
+	return GetFileAttributesEx(Path, GetFileExInfoStandard, &attr_data) != 0;
+#else
 	return GetFileAttributes(Path) != (DWORD)-1;
+#endif
 }
 
+#ifdef WINDOWS_DESKTOP
 static bool_t FileRecycle(const tchar_t* Path)
 {
     tchar_t PathEnded[MAXPATHFULL];
@@ -534,47 +594,77 @@ static bool_t FileRecycle(const tchar_t* Path)
     Ret = FuncSHFileOperation(&DelStruct);
     return Ret == 0;
 }
+#endif
 
 bool_t FileErase(nodecontext* UNUSED_PARAM(p),const tchar_t* Path, bool_t Force, bool_t Safe)
 {
     if (Force)
     {
-        DWORD attr = GetFileAttributes(Path);
+#ifndef WINDOWS_DESKTOP
+		WIN32_FILE_ATTRIBUTE_DATA attr_data;
+		if ((GetFileAttributesEx(Path, GetFileExInfoStandard, &attr_data) != 0) && (attr_data.dwFileAttributes & FILE_ATTRIBUTE_READONLY)) {
+			attr_data.dwFileAttributes ^= FILE_ATTRIBUTE_READONLY;
+			SetFileAttributes(Path, attr_data.dwFileAttributes);
+		}
+#else
+		DWORD attr = GetFileAttributes(Path);
         if ((attr != (DWORD)-1) && (attr & FILE_ATTRIBUTE_READONLY))
         {
             attr ^= FILE_ATTRIBUTE_READONLY;
             SetFileAttributes(Path,attr);
         }
+#endif
     }
 
+#ifndef WINDOWS_DESKTOP
+	return DeleteFile(Path) != FALSE;
+#else
     if (!Safe || !FuncSHFileOperation)
     	return DeleteFile(Path) != FALSE;
     else
         return FileRecycle(Path);
+#endif
 }
 
 bool_t FolderErase(nodecontext* UNUSED_PARAM(p),const tchar_t* Path, bool_t Force, bool_t Safe)
 {
     if (Force)
     {
+#ifndef WINDOWS_DESKTOP
+		WIN32_FILE_ATTRIBUTE_DATA attr_data;
+		if ((GetFileAttributesEx(Path, GetFileExInfoStandard, &attr_data) != 0) && (attr_data.dwFileAttributes & FILE_ATTRIBUTE_READONLY)) {
+			attr_data.dwFileAttributes ^= FILE_ATTRIBUTE_READONLY;
+			SetFileAttributes(Path, attr_data.dwFileAttributes);
+		}
+#else
         DWORD attr = GetFileAttributes(Path);
         if ((attr != (DWORD)-1) && (attr & FILE_ATTRIBUTE_READONLY))
         {
             attr ^= FILE_ATTRIBUTE_READONLY;
             SetFileAttributes(Path,attr);
         }
+#endif
     }
 
+#ifndef WINDOWS_DESKTOP
+	return RemoveDirectory(Path) != FALSE;
+#else
     if (!Safe || !FuncSHFileOperation)
     	return RemoveDirectory(Path) != FALSE;
     else
         return FileRecycle(Path);
+#endif
 }
 
 bool_t PathIsFolder(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
 {
-    DWORD attr = GetFileAttributes(Path);
+#ifndef WINDOWS_DESKTOP
+	WIN32_FILE_ATTRIBUTE_DATA attr_data;
+	return (GetFileAttributesEx(Path, GetFileExInfoStandard, &attr_data) != 0) && ((attr_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY);
+#else
+	DWORD attr = GetFileAttributes(Path);
 	return (attr != (DWORD)-1) && (attr & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+#endif
 }
 
 datetime_t FileDateTime(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
@@ -583,7 +673,12 @@ datetime_t FileDateTime(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
 	HANDLE Find;
 	WIN32_FIND_DATA FindData;
 
+#ifndef WINDOWS_DESKTOP
+	WIN32_FIND_DATA FileData;
+	Find = FindFirstFileEx(Path, FindExInfoStandard, &FileData, FindExSearchNameMatch, NULL, 0);
+#else
 	Find = FindFirstFile(Path, &FindData);
+#endif
 	if (Find != INVALID_HANDLE_VALUE)
 	{
 		Date = FileTimeToRel(&FindData.ftLastWriteTime);
@@ -594,7 +689,11 @@ datetime_t FileDateTime(nodecontext* UNUSED_PARAM(p),const tchar_t* Path)
 
 bool_t FileMove(nodecontext* UNUSED_PARAM(p),const tchar_t* In,const tchar_t* Out)
 {
+#ifndef WINDOWS_DESKTOP
+	return MoveFileEx(In, Out, 0);
+#else
     return MoveFile(In,Out) != 0;
+#endif
 }
 
 void FindFiles(nodecontext* UNUSED_PARAM(p),const tchar_t* Path, const tchar_t* Mask, void(*Process)(const tchar_t*,void*),void* Param)
@@ -605,7 +704,12 @@ void FindFiles(nodecontext* UNUSED_PARAM(p),const tchar_t* Path, const tchar_t* 
 
 	tcscpy_s(FindPath,TSIZEOF(FindPath),Path);
 	tcscat_s(FindPath,TSIZEOF(FindPath),Mask);
+#ifndef WINDOWS_DESKTOP
+	WIN32_FIND_DATA FileData;
+	Find = FindFirstFileEx(Path, FindExInfoStandard, &FileData, FindExSearchNameMatch, NULL, 0);
+#else
 	Find = FindFirstFile(FindPath,&FindData);
+#endif
 
 	if (Find != INVALID_HANDLE_VALUE)
 	{

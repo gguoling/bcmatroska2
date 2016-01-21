@@ -81,8 +81,7 @@ static err_t ReadData(ebml_string *Element, stream *Input, const ebml_parser_con
 
     if (Stream_Seek(Input,EBML_ElementPositionData((ebml_element*)Element),SEEK_SET)==INVALID_FILEPOS_T)
     {
-        Result = ERR_READ;
-        goto failed;
+        return ERR_READ;
     }
 
     Buffer = malloc((size_t)Element->Base.DataSize+1);
