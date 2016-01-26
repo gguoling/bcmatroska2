@@ -696,6 +696,25 @@ extern void free_palmos(void*);
 #endif
 
 #if defined(_MSC_VER) && defined(TARGET_WIN)
+#include <winapifamily.h>
+#if !defined(WINAPI_FAMILY_PARTITION) || !defined(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_FAMILY_PARTITION)
+#if defined(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#define WINDOWS_DESKTOP 1
+#elif defined(WINAPI_PARTITION_PHONE_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PHONE_APP)
+#define WINDOWS_PHONE 1
+#elif defined(WINAPI_PARTITION_APP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define WINDOWS_UNIVERSAL 1
+#endif
+#endif
+#ifdef WINDOWS_UNIVERSAL
+#undef strdup
+#define strdup _strdup
+#endif
+#endif
+
+#if defined(_MSC_VER) && defined(TARGET_WIN)
 #define TRY_BEGIN __try {
 #define TRY_END   ;} __except (1) {}
 #define TRY_END_FUNC(func) ;} __except (1) { func; }
