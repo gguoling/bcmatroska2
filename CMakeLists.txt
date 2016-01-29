@@ -20,6 +20,8 @@ if(NOT ${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
 	add_compile_options(-fPIC)
 endif()
 
+add_compile_options(-w)
+
 add_subdirectory(corec/corec)
 add_subdirectory(libebml2)
 add_subdirectory(libmatroska2)
