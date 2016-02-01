@@ -696,7 +696,9 @@ extern void free_palmos(void*);
 #endif
 
 #if defined(_MSC_VER) && defined(TARGET_WIN)
+#if _MSC_VER >= 1800
 #include <winapifamily.h>
+#endif
 #if !defined(WINAPI_FAMILY_PARTITION) || !defined(WINAPI_PARTITION_DESKTOP)
 #define WINDOWS_DESKTOP 1
 #elif defined(WINAPI_FAMILY_PARTITION)
