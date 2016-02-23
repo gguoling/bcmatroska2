@@ -42,6 +42,8 @@
 #include <errno.h>
 #if defined(TARGET_OSX)
 #include <sys/mount.h>
+#elif defined(TARGET_QNX)
+#include <nbutil.h>
 #else
 #include <sys/vfs.h>
 #endif

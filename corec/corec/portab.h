@@ -149,6 +149,13 @@
 #define TARGET_DESKTOP // only for dekstop (not iPhone or Apple TV)
 #endif
 
+#elif defined(__QNXNTO__)
+
+#if defined(__arm__)
+#define ARM
+#endif
+#define TARGET_QNX
+
 #elif defined(ANDROID)
 
 #define TARGET_ANDROID
@@ -334,7 +341,7 @@ typedef unsigned char uint_fast8_t;
 typedef signed long long int_fast64_t;
 typedef unsigned long long uint_fast64_t;
 
-#elif !defined(__GLIBC__) && !defined(__MINGW32__) && !defined(TARGET_PS2SDK) && !defined(TARGET_IPHONE) && !defined(TARGET_ANDROID) && !defined(__FreeBSD__)
+#elif !defined(__GLIBC__) && !defined(__MINGW32__) && !defined(TARGET_PS2SDK) && !defined(TARGET_IPHONE) && !defined(TARGET_ANDROID) && !defined(__FreeBSD__) && !defined(__QNXNTO__)
 
 #include <inttypes.h>
 
@@ -393,7 +400,7 @@ typedef uint64_t uint_fast64_t;
 
 #endif /* _MSC_VER */
 
-#if !defined(_STDINT_H) && !defined(_STDINT_H_) && !defined(_UINT64_T_DECLARED) // could be used elsewhere
+#if !defined(_STDINT_H) && !defined(_STDINT_H_) && !defined(_UINT64_T_DECLARED) && !defined(_STDINT_H_INCLUDED) // could be used elsewhere
 
 typedef signed long int32_t;
 typedef unsigned long uint32_t;
