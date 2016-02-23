@@ -1,3 +1,25 @@
+############################################################################
+# CMakeLists.txt
+# Copyright (C) 2016  Belledonne Communications, Grenoble France
+#
+############################################################################
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+############################################################################
+
 cmake_minimum_required(VERSION 3.0)
 
 project(matroska2
@@ -14,9 +36,12 @@ option(CONFIG_DEBUG_LEAKS "Enable internal menory leaks checking support" OFF)
 
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
-include_directories(${CMAKE_BINARY_DIR} ./corec)
+include_directories(
+	${CMAKE_BINARY_DIR}
+	corec
+)
 
-if(NOT ${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+if(NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
 	add_compile_options(-fPIC)
 endif()
 
@@ -27,7 +52,7 @@ add_subdirectory(libebml2)
 add_subdirectory(libmatroska2)
 
 install(FILES ${CMAKE_BINARY_DIR}/config.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec
+	DESTINATION include/corec
 )
 
 include(CMakePackageConfigHelpers)
@@ -45,5 +70,5 @@ configure_file(Matroska2Config.cmake.in
 install(FILES
 	${CMAKE_BINARY_DIR}/Matroska2ConfigVersion.cmake
 	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/Matroska2
+	DESTINATION lib/cmake/Matroska2
 )

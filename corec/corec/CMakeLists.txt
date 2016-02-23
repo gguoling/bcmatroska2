@@ -1,3 +1,25 @@
+############################################################################
+# CMakeLists.txt
+# Copyright (C) 2016  Belledonne Communications, Grenoble France
+#
+############################################################################
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+############################################################################
+
 set(COREC_SOURCES
 	array/array.c
 	helpers/file/bufstream.c
@@ -18,7 +40,7 @@ set(COREC_SOURCES
 	str/str.c
 )
 
-if(CMAKE_HOST_WIN32)
+if(WIN32)
 	list(APPEND COREC_SOURCES
 		helpers/charconvert/charconvert_win32.c
 		helpers/date/date_win32.c
@@ -34,7 +56,7 @@ else()
 		helpers/system/ccsystem_posix.c
 		multithread/multithread_pthread.c
 	)
-	if(CMAKE_HOST_APPLE)
+	if(APPLE)
 		list(APPEND COREC_SOURCES
                 	helpers/charconvert/charconvert_osx.c
                 	str/str_osx.c
@@ -52,7 +74,7 @@ else()
 	endif()
 endif()
 
-if(${CONFIG_STDIO})
+if(CONFIG_STDIO)
 	list(APPEND COREC_SOURCES
 		helpers/file/stream_stdio.c
 	)
@@ -61,7 +83,7 @@ endif()
 add_library(corec STATIC ${COREC_SOURCES})
 
 install(TARGETS corec
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+	ARCHIVE DESTINATION lib
 )
 
 install(FILES
@@ -73,17 +95,18 @@ install(FILES
 	memalloc.h
 	memheap.h
 	portab.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec
+	DESTINATION include/corec
 )
 
-install(FILES array/array.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/array)
-install(FILES helpers/charconvert/charconvert.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/charconvert)
-install(FILES helpers/date/date.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/date)
-install(FILES helpers/file/file.h
+install(FILES array/array.h DESTINATION include/corec/array)
+install(FILES helpers/charconvert/charconvert.h DESTINATION include/corec/helpers/charconvert)
+install(FILES helpers/date/date.h DESTINATION include/corec/helpers/date)
+install(FILES
+	helpers/file/file.h
 	helpers/file/streams.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/file
+	DESTINATION include/corec/helpers/file
 )
-install(FILES helpers/md5/md5.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/md5)
+install(FILES helpers/md5/md5.h DESTINATION include/corec/helpers/md5)
 install(FILES helpers/parser/buffer.h
 	helpers/parser/dataheap.h
 	helpers/parser/hotkey.h
@@ -92,15 +115,15 @@ install(FILES helpers/parser/buffer.h
 	helpers/parser/strtab.h
 	helpers/parser/strtypes.h
 	helpers/parser/urlpart.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/parser
+	DESTINATION include/corec/helpers/parser
 )
-install(FILES helpers/system/ccsystem.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/helpers/system)
-install(FILES multithread/multithread.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/multithread)
+install(FILES helpers/system/ccsystem.h DESTINATION include/corec/helpers/system)
+install(FILES multithread/multithread.h DESTINATION include/corec/multithread)
 install(FILES node/node.h
 	node/node_internal.h
 	node/nodebase.h
 	node/nodetools.h
 	node/nodetree.h
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/node
+	DESTINATION include/corec/node
 )
-install(FILES str/str.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/corec/str)
+install(FILES str/str.h DESTINATION include/corec/str)
