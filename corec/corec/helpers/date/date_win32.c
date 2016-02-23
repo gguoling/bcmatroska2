@@ -196,7 +196,7 @@ datetime_t TimePackToRel(const datepack_t *tp, bool_t Local)
     TimeStruct.wYear   = (WORD)tp->Year;
 	TimeStruct.wDayOfWeek = (WORD)(tp->WeekDay ? tp->WeekDay-1:0);
 
-#ifdef TARGET_WIN2K
+#if defined(TARGET_WIN2K) || !defined(WINDOWS_DESKTOP)
     if (Local) 
     {
         SYSTEMTIME sysTimeStruct;
@@ -214,7 +214,7 @@ datetime_t TimePackToRel(const datepack_t *tp, bool_t Local)
 
     t = FileTimeToRel(&fTime);
 
-#ifndef TARGET_WIN2K
+#if !defined(TARGET_WIN2K) || defined(WINDOWS_DESKTOP)
     if (Local) {
         GetFixedTZ();
         t += fix_tz.Bias * 60;
@@ -238,7 +238,7 @@ bool_t GetDatePacked(datetime_t t, datepack_t *tp, bool_t Local)
     if (!tp || t == INVALID_DATETIME_T) 
         return 0;
 
-#ifndef TARGET_WIN2K
+#if !defined(TARGET_WIN2K) || defined(WINDOWS_DESKTOP)
     if (Local) {
         GetFixedTZ();
         if (GetIsDst(t))
@@ -251,7 +251,7 @@ bool_t GetDatePacked(datetime_t t, datepack_t *tp, bool_t Local)
 
     RelToFileTime(t, &fTime);
 
-#ifdef TARGET_WIN2K
+#if defined(TARGET_WIN2K) || !defined(WINDOWS_DESKTOP)
     if (Local) 
     {
         SYSTEMTIME sysTimeStruct = {0};
@@ -278,7 +278,7 @@ bool_t GetDatePacked(datetime_t t, datepack_t *tp, bool_t Local)
 
 bool_t GetIsDst(datetime_t t)
 {
-#ifdef TARGET_WIN2K
+#if defined(TARGET_WIN2K) || !defined(WINDOWS_DESKTOP)
     FILETIME fTime = {0};
     TIME_ZONE_INFORMATION timeZoneInfo;
     SYSTEMTIME sysTimeStruct = {0};
