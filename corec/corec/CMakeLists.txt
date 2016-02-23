@@ -39,6 +39,11 @@ else()
                 	helpers/charconvert/charconvert_osx.c
                 	str/str_osx.c
 		)
+	elseif(QNX)
+		list(APPEND COREC_SOURCES
+                        helpers/charconvert/charconvert_utf8.c
+                        str/str_utf8.c
+                )
 	else()
 		list(APPEND COREC_SOURCES
 			helpers/charconvert/charconvert_linux.c

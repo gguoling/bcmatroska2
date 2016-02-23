@@ -43,7 +43,7 @@
 #if defined(TARGET_OSX)
 #include <sys/mount.h>
 #elif defined(TARGET_QNX)
-#include <nbutil.h>
+#include <sys/statvfs.h>
 #else
 #include <sys/vfs.h>
 #endif
@@ -392,8 +392,13 @@ int64_t GetPathFreeSpace(nodecontext* UNUSED_PARAM(p), const tchar_t* Path)
 {
 #ifndef TODO
     // need to an include (see at includes)
+#if defined(TARGET_QNX)
+    struct statvfs st;
+    if (statvfs(Path, &st) < 0)
+#else
     struct statfs st;
     if (statfs(Path, &st) < 0)
+#endif
     	return -1;
     return (int64_t)st.f_bsize * (int64_t)st.f_bavail;
 #else

@@ -30,7 +30,7 @@
 #include "charconvert.h"
 #include "corec/str/str.h"
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined (TARGET_QNX)
 
 #include <iconv.h>
 #include <locale.h>
