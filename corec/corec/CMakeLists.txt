@@ -81,6 +81,7 @@ if(CONFIG_STDIO)
 endif()
 
 add_library(corec-objects OBJECT ${COREC_SOURCES})
+set_target_properties(corec-objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 install(FILES
 	banned.h

@@ -38,16 +38,17 @@ option(CONFIG_DEBUG_LEAKS "Enable internal menory leaks checking support" OFF)
 
 include(GNUInstallDirs)
 
+if(NOT CMAKE_INSTALL_RPATH AND CMAKE_INSTALL_PREFIX)
+	set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
+	message(STATUS "Setting install rpath to ${CMAKE_INSTALL_RPATH}")
+endif()
+
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
 include_directories(
 	${CMAKE_BINARY_DIR}
 	corec
 )
-
-if(NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
-	add_compile_options(-fPIC)
-endif()
 
 add_compile_options(-w)
 
@@ -75,7 +76,7 @@ configure_file(Matroska2Config.cmake.in
 	@ONLY
 )
 
-set(CONFIG_PACKAGE_LOCATION "share/${PROJECT_NAME}/cmake")
+set(CONFIG_PACKAGE_LOCATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake")
 install(EXPORT Matroska2Targets
 	FILE Matroska2Targets.cmake
 	DESTINATION ${CONFIG_PACKAGE_LOCATION}

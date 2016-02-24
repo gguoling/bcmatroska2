@@ -25,6 +25,7 @@ add_library(matroska2-objects OBJECT
 	matroskablock.c
 	matroska_sem.c
 )
+set_target_properties(matroska2-objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 target_include_directories(matroska2-objects PRIVATE ../libebml2 .)
 
 if(ENABLE_STATIC)

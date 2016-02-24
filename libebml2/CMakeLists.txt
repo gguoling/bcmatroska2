@@ -31,6 +31,7 @@ add_library(ebml2-objects OBJECT
 	ebmldate.c
 	ebmlvoid.c
 )
+set_target_properties(ebml2-objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 install(DIRECTORY ebml
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
