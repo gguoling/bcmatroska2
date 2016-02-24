@@ -20,21 +20,40 @@
 #
 ############################################################################
 
-add_library(matroska2 STATIC
+add_library(matroska2-objects OBJECT
 	matroskamain.c
 	matroskablock.c
 	matroska_sem.c
 )
+target_include_directories(matroska2-objects PRIVATE ../libebml2 .)
 
-target_include_directories(matroska2
-	PUBLIC ${CMAKE_SOURCE_DIR}/libebml2
-	PUBLIC ${CMAKE_SOURCE_DIR}/libmatroska2
-)
+if(ENABLE_STATIC)
+	add_library(matroska2-static STATIC $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> $<TARGET_OBJECTS:matroska2-objects>)
+	set_target_properties(matroska2-static PROPERTIES OUTPUT_NAME matroska2)
+	install(TARGETS matroska2-static EXPORT Matroska2Targets
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+	)
+endif()
+if(ENABLE_SHARED)
+	add_library(matroska2 SHARED $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> $<TARGET_OBJECTS:matroska2-objects>)
+	set_target_properties(matroska2 PROPERTIES VERSION 0.0.0 SOVERSION 0)
+	if(MSVC)
+		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Debug/matroska2.pdb
+				DESTINATION ${CMAKE_INSTALL_BINDIR}
+				PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+			)
+		endif()
+	endif()
+	install(TARGETS matroska2 EXPORT Matroska2Targets
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+	)
+endif()
 
 install(DIRECTORY matroska
-	DESTINATION include
-)
-
-install(TARGETS matroska2
-	ARCHIVE DESTINATION lib
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

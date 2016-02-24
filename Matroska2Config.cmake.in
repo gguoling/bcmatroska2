@@ -26,18 +26,16 @@
 #  MATROSKA2_FOUND - system has Matroska2
 #  MATROSKA2_INCLUDE_DIRS - the Matroska2 include directory
 #  MATROSKA2_LIBRARIES - The libraries needed to use Matroska2
-#  MATROSKA2_CPPFLAGS - The cflags needed to use Matroska2
+
+include("${CMAKE_CURRENT_LIST_DIR}/Matroska2Targets.cmake")
 
 get_filename_component(MATROSKA2_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 set(MATROSKA2_INCLUDE_DIRS
-	${MATROSKA2_CMAKE_DIR}/../../../include
+	${MATROSKA2_CMAKE_DIR}/../../../${CMAKE_INSTALL_INCLUDEDIR}
 )
-
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL Windows)
-	set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../matroska2.lib ${MATROSKA2_CMAKE_DIR}/../../ebml2.lib ${MATROSKA2_CMAKE_DIR}/../../corec.lib)
+if(@ENABLE_SHARED@)
+	set(MATROSKA2_LIBRARIES matroska2)
 else()
-	set(MATROSKA2_LIBRARIES ${MATROSKA2_CMAKE_DIR}/../../libmatroska2.a ${MATROSKA2_CMAKE_DIR}/../../libebml2.a ${MATROSKA2_CMAKE_DIR}/../../libcorec.a)
+	set(MATROSKA2_LIBRARIES matroska2-static)
 endif()
-
-set(MATROSKA2_CPPFLAGS)
 set(MATROSKA2_FOUND 1)

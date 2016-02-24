@@ -20,7 +20,7 @@
 #
 ############################################################################
 
-add_library(ebml2 STATIC
+add_library(ebml2-objects OBJECT
 	ebmlmain.c
 	ebmlelement.c
 	ebmlmaster.c
@@ -32,10 +32,6 @@ add_library(ebml2 STATIC
 	ebmlvoid.c
 )
 
-install(TARGETS ebml2
-	ARCHIVE DESTINATION lib
-)
-
 install(DIRECTORY ebml
-	DESTINATION include
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

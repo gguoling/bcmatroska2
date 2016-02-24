@@ -27,12 +27,16 @@ project(matroska2
 	LANGUAGES C
 )
 
+option(ENABLE_SHARED "Build shared library." YES)
+option(ENABLE_STATIC "Build static library." YES)
 option(CONFIG_EBML_WRITING "Enable EBML file writing support" ON)
 option(CONFIG_EBML_UNICODE "Enable Unicode support" ON)
 option(CONFIG_DEBUGCHECKS "Enable internal checks" ON)
 option(CONFIG_STDIO "Use stdio.h for writing" ON)
 option(CONFIG_FILEPOS_64 "Encode filepos_t on 64bits" ON)
 option(CONFIG_DEBUG_LEAKS "Enable internal menory leaks checking support" OFF)
+
+include(GNUInstallDirs)
 
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
@@ -52,7 +56,7 @@ add_subdirectory(libebml2)
 add_subdirectory(libmatroska2)
 
 install(FILES ${CMAKE_BINARY_DIR}/config.h
-	DESTINATION include/corec
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec
 )
 
 include(CMakePackageConfigHelpers)
@@ -62,13 +66,22 @@ write_basic_package_version_file(
 	COMPATIBILITY AnyNewerVersion
 )
 
+export(EXPORT Matroska2Targets
+	FILE "${CMAKE_CURRENT_BINARY_DIR}/Matroska2Targets.cmake"
+)
+
 configure_file(Matroska2Config.cmake.in
 	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
 	@ONLY
 )
 
+set(CONFIG_PACKAGE_LOCATION "share/${PROJECT_NAME}/cmake")
+install(EXPORT Matroska2Targets
+	FILE Matroska2Targets.cmake
+	DESTINATION ${CONFIG_PACKAGE_LOCATION}
+)
 install(FILES
 	${CMAKE_BINARY_DIR}/Matroska2ConfigVersion.cmake
 	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
-	DESTINATION lib/cmake/Matroska2
+	DESTINATION ${CONFIG_PACKAGE_LOCATION}
 )

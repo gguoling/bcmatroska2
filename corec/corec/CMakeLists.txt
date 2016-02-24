@@ -80,11 +80,7 @@ if(CONFIG_STDIO)
 	)
 endif()
 
-add_library(corec STATIC ${COREC_SOURCES})
-
-install(TARGETS corec
-	ARCHIVE DESTINATION lib
-)
+add_library(corec-objects OBJECT ${COREC_SOURCES})
 
 install(FILES
 	banned.h
@@ -95,19 +91,20 @@ install(FILES
 	memalloc.h
 	memheap.h
 	portab.h
-	DESTINATION include/corec
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec
 )
 
-install(FILES array/array.h DESTINATION include/corec/array)
-install(FILES helpers/charconvert/charconvert.h DESTINATION include/corec/helpers/charconvert)
-install(FILES helpers/date/date.h DESTINATION include/corec/helpers/date)
+install(FILES array/array.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/array)
+install(FILES helpers/charconvert/charconvert.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/charconvert)
+install(FILES helpers/date/date.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/date)
 install(FILES
 	helpers/file/file.h
 	helpers/file/streams.h
-	DESTINATION include/corec/helpers/file
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/file
 )
-install(FILES helpers/md5/md5.h DESTINATION include/corec/helpers/md5)
-install(FILES helpers/parser/buffer.h
+install(FILES helpers/md5/md5.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/md5)
+install(FILES
+	helpers/parser/buffer.h
 	helpers/parser/dataheap.h
 	helpers/parser/hotkey.h
 	helpers/parser/nodelookup.h
@@ -115,15 +112,16 @@ install(FILES helpers/parser/buffer.h
 	helpers/parser/strtab.h
 	helpers/parser/strtypes.h
 	helpers/parser/urlpart.h
-	DESTINATION include/corec/helpers/parser
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/parser
 )
-install(FILES helpers/system/ccsystem.h DESTINATION include/corec/helpers/system)
-install(FILES multithread/multithread.h DESTINATION include/corec/multithread)
-install(FILES node/node.h
+install(FILES helpers/system/ccsystem.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/helpers/system)
+install(FILES multithread/multithread.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/multithread)
+install(FILES
+	node/node.h
 	node/node_internal.h
 	node/nodebase.h
 	node/nodetools.h
 	node/nodetree.h
-	DESTINATION include/corec/node
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/node
 )
-install(FILES str/str.h DESTINATION include/corec/str)
+install(FILES str/str.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/corec/str)
