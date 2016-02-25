@@ -59,6 +59,13 @@ if(APPLE)
 endif()
 string(REPLACE ";" " " LINK_FLAGS_STR "${LINK_FLAGS}")
 
+if(WIN32)
+	add_definitions(
+		"-DEBML2_EXPORTS"
+		"-DMATROSKA2_EXPORTS"
+		"-DSTR_EXPORTS"
+	)
+endif()
 add_compile_options(-w)
 
 add_subdirectory(corec/corec)
