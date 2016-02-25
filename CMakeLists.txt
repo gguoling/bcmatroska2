@@ -50,6 +50,15 @@ include_directories(
 	corec
 )
 
+set(LINK_FLAGS )
+if(APPLE)
+	list(APPEND LINK_FLAGS "-framework Foundation")
+	if(IOS)
+		list(APPEND LINK_FLAGS "-framework CoreFoundation")
+	endif()
+endif()
+string(REPLACE ";" " " LINK_FLAGS_STR "${LINK_FLAGS}")
+
 add_compile_options(-w)
 
 add_subdirectory(corec/corec)
