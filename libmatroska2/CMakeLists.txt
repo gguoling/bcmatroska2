@@ -20,13 +20,11 @@
 #
 ############################################################################
 
-add_library(matroska2-objects OBJECT
+set(MATROSKA2_SOURCE_FILES
 	matroskamain.c
 	matroskablock.c
 	matroska_sem.c
 )
-set_target_properties(matroska2-objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-target_include_directories(matroska2-objects PRIVATE ../libebml2 .)
 
 set(LIBS )
 if(WIN32 AND NOT CMAKE_SYSTEM_NAME STREQUAL "WindowsPhone" AND NOT CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
@@ -35,11 +33,13 @@ endif()
 
 string(REPLACE ";" " " LINK_FLAGS_STR "${LINK_FLAGS}")
 if(ENABLE_STATIC)
-	add_library(matroska2-static STATIC $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> $<TARGET_OBJECTS:matroska2-objects>)
+	add_library(matroska2-static STATIC $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
 	set_target_properties(matroska2-static PROPERTIES OUTPUT_NAME matroska2)
+	set_target_properties(matroska2-static PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 	if(NOT "${LINK_FLAGS_STR}" STREQUAL "")
 		set_target_properties(matroska2-static PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
 	endif()
+	target_include_directories(matroska2-static PRIVATE ../libebml2 .)
 	if(LIBS)
 		target_link_libraries(matroska2-static ${LIBS})
 	endif()
@@ -49,11 +49,13 @@ if(ENABLE_STATIC)
 	)
 endif()
 if(ENABLE_SHARED)
-	add_library(matroska2 SHARED $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> $<TARGET_OBJECTS:matroska2-objects>)
+	add_library(matroska2 SHARED $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
 	set_target_properties(matroska2 PROPERTIES VERSION 0.0.0 SOVERSION 0)
+	set_target_properties(matroska2 PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 	if(NOT "${LINK_FLAGS_STR}" STREQUAL "")
 		set_target_properties(matroska2 PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
 	endif()
+	target_include_directories(matroska2 PRIVATE ../libebml2 .)
 	if(LIBS)
 		target_link_libraries(matroska2 ${LIBS})
 	endif()
