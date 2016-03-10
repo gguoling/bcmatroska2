@@ -58,8 +58,13 @@ else()
 	)
 	if(APPLE)
 		list(APPEND COREC_SOURCES
-                	helpers/charconvert/charconvert_osx.c
-                	str/str_osx.c
+			helpers/charconvert/charconvert_osx.c
+			str/str_osx.c
+		)
+	elseif(ANDROID)
+		list(APPEND COREC_SOURCES
+			helpers/charconvert/charconvert_utf8.c
+			str/str_linux.c
 		)
 	elseif(QNX)
 		list(APPEND COREC_SOURCES
