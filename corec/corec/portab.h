@@ -156,7 +156,7 @@
 #endif
 #define TARGET_QNX
 
-#elif defined(ANDROID)
+#elif defined(__ANDROID__)
 
 #define TARGET_ANDROID
 
