@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(bcmatroska2
-	VERSION 0.22.1
+	VERSION 0.23
 	LANGUAGES C
 )
 
