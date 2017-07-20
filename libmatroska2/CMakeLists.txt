@@ -33,41 +33,41 @@ endif()
 
 string(REPLACE ";" " " LINK_FLAGS_STR "${LINK_FLAGS}")
 if(ENABLE_STATIC)
-	add_library(matroska2-static STATIC $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
-	set_target_properties(matroska2-static PROPERTIES OUTPUT_NAME matroska2)
-	set_target_properties(matroska2-static PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+	add_library(bcmatroska2-static STATIC $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
+	set_target_properties(bcmatroska2-static PROPERTIES OUTPUT_NAME bcmatroska2)
+	set_target_properties(bcmatroska2-static PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 	if(NOT "${LINK_FLAGS_STR}" STREQUAL "")
-		set_target_properties(matroska2-static PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
+		set_target_properties(bcmatroska2-static PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
 	endif()
-	target_include_directories(matroska2-static PRIVATE ../libebml2 .)
+	target_include_directories(bcmatroska2-static PRIVATE ../libebml2 .)
 	if(LIBS)
-		target_link_libraries(matroska2-static ${LIBS})
+		target_link_libraries(bcmatroska2-static ${LIBS})
 	endif()
-	install(TARGETS matroska2-static EXPORT Matroska2Targets
+	install(TARGETS bcmatroska2-static EXPORT BcMatroska2Targets
 		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 	)
 endif()
 if(ENABLE_SHARED)
-	add_library(matroska2 SHARED $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
-	set_target_properties(matroska2 PROPERTIES VERSION 0.0.0 SOVERSION 0)
-	set_target_properties(matroska2 PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+	add_library(bcmatroska2 SHARED $<TARGET_OBJECTS:corec-objects> $<TARGET_OBJECTS:ebml2-objects> ${MATROSKA2_SOURCE_FILES})
+	set_target_properties(bcmatroska2 PROPERTIES VERSION 0.0.0 SOVERSION 0)
+	set_target_properties(bcmatroska2 PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 	if(NOT "${LINK_FLAGS_STR}" STREQUAL "")
-		set_target_properties(matroska2 PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
+		set_target_properties(bcmatroska2 PROPERTIES LINK_FLAGS "${LINK_FLAGS_STR}")
 	endif()
-	target_include_directories(matroska2 PRIVATE ../libebml2 .)
+	target_include_directories(bcmatroska2 PRIVATE ../libebml2 .)
 	if(LIBS)
-		target_link_libraries(matroska2 ${LIBS})
+		target_link_libraries(bcmatroska2 ${LIBS})
 	endif()
 	if(MSVC)
 		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Debug/matroska2.pdb
+			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Debug/bcmatroska2.pdb
 				DESTINATION ${CMAKE_INSTALL_BINDIR}
 				PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 			)
 		endif()
 	endif()
-	install(TARGETS matroska2 EXPORT Matroska2Targets
+	install(TARGETS bcmatroska2 EXPORT BcMatroska2Targets
 		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

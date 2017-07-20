@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-project(matroska2
+project(bcmatroska2
 	VERSION 0.22.1
 	LANGUAGES C
 )
@@ -78,27 +78,38 @@ install(FILES ${CMAKE_BINARY_DIR}/config.h
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-	${CMAKE_BINARY_DIR}/Matroska2ConfigVersion.cmake
+	${CMAKE_BINARY_DIR}/BcMatroska2ConfigVersion.cmake
 	VERSION ${MATROSKA2_VERSION}
 	COMPATIBILITY AnyNewerVersion
 )
 
-export(EXPORT Matroska2Targets
-	FILE "${CMAKE_CURRENT_BINARY_DIR}/Matroska2Targets.cmake"
+export(EXPORT BcMatroska2Targets
+	FILE "${CMAKE_CURRENT_BINARY_DIR}/BcMatroska2Targets.cmake"
 )
 
-configure_file(Matroska2Config.cmake.in
-	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
+configure_file(BcMatroska2Config.cmake.in
+	${CMAKE_BINARY_DIR}/BcMatroska2Config.cmake
 	@ONLY
 )
 
 set(CONFIG_PACKAGE_LOCATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake")
-install(EXPORT Matroska2Targets
-	FILE Matroska2Targets.cmake
+install(EXPORT BcMatroska2Targets
+	FILE BcMatroska2Targets.cmake
 	DESTINATION ${CONFIG_PACKAGE_LOCATION}
 )
 install(FILES
-	${CMAKE_BINARY_DIR}/Matroska2ConfigVersion.cmake
-	${CMAKE_BINARY_DIR}/Matroska2Config.cmake
+	${CMAKE_BINARY_DIR}/BcMatroska2ConfigVersion.cmake
+	${CMAKE_BINARY_DIR}/BcMatroska2Config.cmake
 	DESTINATION ${CONFIG_PACKAGE_LOCATION}
 )
+
+
+# CPack settings
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+set(CPACK_SOURCE_IGNORE_FILES
+	"^${CMAKE_BINARY_DIR}"
+	"/\\\\..+"
+)
+
+include(CPack)
