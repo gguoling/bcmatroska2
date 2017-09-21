@@ -53,9 +53,13 @@ else()
 	list(APPEND COREC_SOURCES
 		helpers/date/date_libc.c
 		helpers/file/file_libc.c
-		helpers/system/ccsystem_posix.c
 		multithread/multithread_pthread.c
 	)
+	if (NOT IOS) 
+		list(APPEND COREC_SOURCES
+			helpers/system/ccsystem_posix.c
+		)	
+	endif()
 	if(APPLE)
 		list(APPEND COREC_SOURCES
 			helpers/charconvert/charconvert_osx.c
