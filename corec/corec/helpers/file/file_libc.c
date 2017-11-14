@@ -27,7 +27,7 @@
  *
  ****************************************************************************/
 
-#include "file.h"
+#include "config.h"
 
 #ifdef CONFIG_FILEPOS_64
 #define __USE_FILE_OFFSET64
@@ -47,6 +47,8 @@
 #else
 #include <sys/vfs.h>
 #endif
+
+#include "file.h"
 
 #if defined(O_ACCMODE)
 #define _RW_ACCESS_FILE  (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
