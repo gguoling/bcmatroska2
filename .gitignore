@@ -3,6 +3,6 @@
 *.mak
 *.a
 GNUmakefile
-/build/
 /release/
 /spectool/spec.xml
+bcmatroska2.spec
