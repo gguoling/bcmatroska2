@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ *
  * Copyright (c) 2008-2010, CoreCodec, Inc.
  * All rights reserved.
  *
@@ -40,6 +40,10 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <errno.h>
+
+// Do not move. Define TARGET_*.
+#include "file.h"
+
 #if defined(TARGET_OSX)
 #include <sys/mount.h>
 #elif defined(TARGET_QNX)
@@ -47,8 +51,6 @@
 #else
 #include <sys/vfs.h>
 #endif
-
-#include "file.h"
 
 #if defined(O_ACCMODE)
 #define _RW_ACCESS_FILE  (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
@@ -104,7 +106,7 @@ static err_t Open(filestream* p, const tchar_t* URL, int Flags)
 		}
 
 		tcscpy_s(p->URL,TSIZEOF(p->URL),URL);
-		
+
         if (stat(URL, &file_stats) == 0)
 			p->Length = file_stats.st_size;
 
@@ -192,7 +194,7 @@ static err_t OpenDir(filestream* p,const tchar_t* Path,int UNUSED_PARAM(Flags))
 	AddPathDelimiter(p->DirPath,TSIZEOF(p->DirPath));
     return ERR_NONE;
 }
-	
+
 extern datetime_t LinuxToDateTime(time_t);
 
 static err_t EnumDir(filestream* p,const tchar_t* Exts,bool_t ExtFilter,streamdir* Item)
@@ -209,7 +211,7 @@ static err_t EnumDir(filestream* p,const tchar_t* Exts,bool_t ExtFilter,streamdi
 	{
 	    tchar_t FilePath[MAXPATH];
 	    struct stat file_stats;
-        
+
         if (Dirent->d_name[0]=='.') // skip hidden files and current directory
             continue;
 
@@ -350,7 +352,7 @@ void FindFiles(nodecontext *p,const tchar_t* Path, const tchar_t* Mask,void(*Pro
     DIR* Directory;
     struct dirent* DirectoryInfo;
     tchar_t TPathToFile[MAXPATH];
-    
+
     Directory = opendir(Path);
     if (Directory)
     {
@@ -368,10 +370,10 @@ void FindFiles(nodecontext *p,const tchar_t* Path, const tchar_t* Mask,void(*Pro
                 }
             }
         }
-        
+
         closedir(Directory);
     }
-    
+
 }
 
 stream *FileTemp(anynode *Any)
