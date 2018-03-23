@@ -6,12 +6,12 @@
 %define _datarootdir       %{_prefix}/share
 %define _datadir           %{_datarootdir}
 
-%define build_number @PROJECT_VERSION@
+%define build_number 1
 
 
 Name:           @CPACK_PACKAGE_NAME@
 Version:        @PROJECT_VERSION@
-Release:        %{?dist}
+Release:        %{build_number}%{?dist}
 Summary:        A libary to parse Matroska files (.mkv and .mka)
 
 
