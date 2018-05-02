@@ -45,8 +45,6 @@
 #endif
 #endif
 
-static tchar_t *Current = NULL;
-
 void CharConvSS(charconv* CC, char* Out, size_t OutLen, const char* In)
 {
     if (OutLen>0)
@@ -183,26 +181,24 @@ void CharConvWW(charconv* CC, wchar_t* Out, size_t OutLen, const wchar_t* In)
    }
 }
 
-static NOINLINE void GetDefault()
+static NOINLINE char * GetDefault()
 {
-    if (!Current)
-    {
-        setlocale(LC_ALL,""); // set default for all
-        Current = setlocale(LC_CTYPE,"");
-        if (Current)
-            Current = strrchr(Current,'.');
-        if (Current)
-           ++Current;
-        else
-           Current = "";
-    }
+    setlocale(LC_ALL,""); // set default for all
+    char *Current = setlocale(LC_CTYPE,"");
+    if (Current)
+        Current = strrchr(Current,'.');
+    if (Current)
+        ++Current;
+    else
+        Current = "";
+    return Current;
 }
 
 charconv* CharConvOpen(const tchar_t* From, const tchar_t* To)
 {
     iconv_t CC;
 
-    GetDefault();
+    char *Current = GetDefault();
 
     if (!From || !From[0])
         From = Current;
@@ -228,7 +224,7 @@ void CharConvClose(charconv* p)
 
 void CharConvDefault(tchar_t* Out, size_t OutLen)
 {
-    GetDefault();
+    char *Current = GetDefault();
 
     tcscpy_s(Out,OutLen,Current);
 }
