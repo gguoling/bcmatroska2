@@ -2019,7 +2019,7 @@ NOINLINE bool_t ExprIsTokenEx(const tchar_t** p,const tchar_t* Name,...)
 
 NOINLINE bool_t ExprIsToken(const tchar_t** p,const tchar_t* Name)
 {
-    return ExprIsTokenEx(p,Name);
+    return ExprIsTokenEx(p,"%s",Name);
 }
 
 uint32_t StringToIP(const tchar_t *Address)
