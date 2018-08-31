@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ *
  * Copyright (c) 2008-2010, CoreCodec, Inc.
  * All rights reserved.
  *
@@ -402,8 +402,8 @@ typedef uint64_t uint_fast64_t;
 
 #if !defined(_STDINT_H) && !defined(_STDINT_H_) && !defined(_UINT64_T_DECLARED) && !defined(_STDINT_H_INCLUDED) // could be used elsewhere
 
-typedef signed long int32_t;
-typedef unsigned long uint32_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
 typedef signed short int16_t;
 typedef unsigned short uint16_t;
 typedef signed char int8_t;
