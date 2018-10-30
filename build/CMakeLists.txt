@@ -40,6 +40,8 @@ message("-- Package file name is ${CPACK_PACKAGE_FILE_NAME}")
 
 set(CPACK_SOURCE_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME})
 
-configure_file("rpm/bcmatroska2.spec.cmake" "${PROJECT_SOURCE_DIR}/bcmatroska2.spec" @ONLY)
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+	configure_file("rpm/bcmatroska2.spec.cmake" "${PROJECT_SOURCE_DIR}/bcmatroska2.spec" @ONLY)
+endif()
 
 include(CPack)
