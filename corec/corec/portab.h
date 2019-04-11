@@ -277,9 +277,9 @@
 #define alloca _alloca
 #endif
 
-#ifndef inline
-#define inline __inline
-#endif
+//#ifndef inline
+//#define inline __inline
+//#endif
 
 #ifndef _UINTPTR_T_DEFINED
 typedef unsigned int uintptr_t;
