@@ -20,7 +20,7 @@
 #
 ############################################################################
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 
 project(bcmatroska2
 	VERSION 0.23
@@ -77,6 +77,8 @@ install(FILES ${CMAKE_BINARY_DIR}/config.h
 )
 
 include(CMakePackageConfigHelpers)
+set(CONFIG_PACKAGE_LOCATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake")
+
 write_basic_package_version_file(
 	${CMAKE_BINARY_DIR}/BcMatroska2ConfigVersion.cmake
 	VERSION ${MATROSKA2_VERSION}
@@ -87,12 +89,12 @@ export(EXPORT BcMatroska2Targets
 	FILE "${CMAKE_CURRENT_BINARY_DIR}/BcMatroska2Targets.cmake"
 )
 
-configure_file(BcMatroska2Config.cmake.in
-	${CMAKE_BINARY_DIR}/BcMatroska2Config.cmake
-	@ONLY
+configure_package_config_file(BcMatroska2Config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/BcMatroska2Config.cmake"
+	INSTALL_DESTINATION ${CONFIG_PACKAGE_LOCATION}
+	NO_SET_AND_CHECK_MACRO
 )
 
-set(CONFIG_PACKAGE_LOCATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake")
 install(EXPORT BcMatroska2Targets
 	FILE BcMatroska2Targets.cmake
 	DESTINATION ${CONFIG_PACKAGE_LOCATION}
