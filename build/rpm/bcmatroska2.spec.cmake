@@ -2,23 +2,22 @@
 
 %define _prefix    @CMAKE_INSTALL_PREFIX@
 %define pkg_prefix @BC_PACKAGE_NAME_PREFIX@
+%define package_name @CPACK_PACKAGE_NAME@-${FULL_VERSION}
 
 %define _datarootdir       %{_prefix}/share
 %define _datadir           %{_datarootdir}
 
-%define build_number 1
-
 
 Name:           @CPACK_PACKAGE_NAME@
-Version:        @PROJECT_VERSION@
-Release:        %{build_number}%{?dist}
+Version:        ${RPM_VERSION}
+Release:        ${RPM_RELEASE}%{?dist}
 Summary:        A libary to parse Matroska files (.mkv and .mka)
 
 
 
 Group:          Applications/Multimedia
 License:        BSD-3
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{package_name}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -51,7 +50,7 @@ develop programs using the bcmatroska2 library.
 %custom_debug_package
 
 %prep
-%setup -n %{name}-%{version}
+%setup -n %{package_name}
 
 %build
 %{expand:%%%cmake_name} . -DCMAKE_BUILD_TYPE=@CMAKE_BUILD_TYPE@ -DCMAKE_PREFIX_PATH:PATH=%{_prefix}
