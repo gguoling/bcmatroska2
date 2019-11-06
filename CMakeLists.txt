@@ -43,6 +43,8 @@ if(NOT CMAKE_INSTALL_RPATH AND CMAKE_INSTALL_PREFIX)
 	message(STATUS "Setting install rpath to ${CMAKE_INSTALL_RPATH}")
 endif()
 
+find_package(bctoolbox REQUIRED)
+
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
 include_directories(
